@@ -42,6 +42,22 @@ function createFaceFunction(matrixDimension, cL, fL) {
                         }	
 }
 
+
+// create selector for cell location for rotation
+function chooseCellLocationFunction(matrixDimension) {	  
+ //Define variables and array
+  var i, j, k, text;
+  var arr =[];
+  //removes the child elements of the selected element(s).
+   $("#cellRotation").empty(); 
+   for (i = 1; i < matrixDimension+1; i++) {
+	 text += "<option value="+i+">"+i+"</option>" ;
+	 }        
+    $("#cellRotation").append(text); 
+}
+
+
+
 //color each cells separatelly
 function colorCellsFunction(matrixDimension, cL, colorFace) {	
  //Define variables and array
@@ -77,20 +93,31 @@ function initializeMatrixFunction(backArr, rightsideArr, frontArr, leftsideArr, 
  //rotate matrix around X-axis for cell in middle not edge give color
  // k repsent step rotation in middle in clock wise dircetion
  // axisVar = X, numStepRot = 1, 2, 3, cellLocation = middle;
-function matrixXaxisRotationFunction(cellLocation, numStepRot, matrixDimension, rightsideArr, bottomArr, leftsideArr, topArr) {
+function matrixXaxisRotationFunction(directionRot, cellLocation, numStepRot, matrixDimension, rightsideArr, bottomArr, leftsideArr, topArr) {
  // define variables
    var j, i, k, ii, jj, temp;
    var squDimension = matrixDimension*matrixDimension-1;
   for(k=0; k < numStepRot; k++){
 	j = 0;  	  
    for (i=matrixDimension-cellLocation; i < matrixDimension*matrixDimension; i=i+matrixDimension) {	
-    
+   
     ii = j+matrixDimension*(cellLocation-1);	
-	temp=rightsideArr[i];
-	rightsideArr[i]=bottomArr[ii];
+	 if (directionRot == "cw") {
+	temp = rightsideArr[i];
+	rightsideArr[i] = bottomArr[ii];
 	bottomArr[ii] = leftsideArr[matrixDimension*(matrixDimension-1)-j*matrixDimension+(cellLocation-1)];
 	leftsideArr[matrixDimension*(matrixDimension-1)-j*matrixDimension+(cellLocation-1)] = topArr[squDimension-ii];
 	topArr[squDimension-ii] = temp;
+	
+	} else {
+		
+	temp = leftsideArr[(cellLocation-1)+j*matrixDimension];
+	leftsideArr[(cellLocation-1)+j*matrixDimension] = bottomArr[cellLocation*matrixDimension-1-j];
+	bottomArr[cellLocation*matrixDimension-1-j] = rightsideArr[matrixDimension*matrixDimension-cellLocation-j*matrixDimension];
+	rightsideArr[matrixDimension*matrixDimension-cellLocation-j*matrixDimension] = topArr[matrixDimension*(matrixDimension-cellLocation)+j];
+	topArr[matrixDimension*(matrixDimension-cellLocation)+j] = temp;
+	
+	}
 	j++;
 	 
                                                                      }
@@ -100,18 +127,27 @@ function matrixXaxisRotationFunction(cellLocation, numStepRot, matrixDimension, 
   //rotate matrix around Y-axis for cell in middle not edge give color
   // k repsent step rotation in middle in clock wise dircetion
   // axisVar = Y, numStepRot = 1,2,3, cellLocation = middle; 
- function matrixYaxisRotationFunction(cellLocation, numStepRot, matrixDimension, topArr, frontArr, bottomArr, backArr) {
+ function matrixYaxisRotationFunction(directionRot, cellLocation, numStepRot, matrixDimension, topArr, frontArr, bottomArr, backArr) {
    // define variables
    var i, k, temp;
    //console.log(topArr);
   for(k=0; k < numStepRot; k++){
 	  	  
    for (i =(cellLocation-1); i< (matrixDimension*matrixDimension); i=i+matrixDimension) {	 
+	 if (directionRot == "cw") {	
 	 temp=topArr[i];
 	 topArr[i] = frontArr[i];
 	 frontArr[i] = bottomArr[i];
 	 bottomArr[i] = backArr[matrixDimension*matrixDimension-1-i];
-	 backArr[matrixDimension*matrixDimension-1-i] = temp;	 
+	 backArr[matrixDimension*matrixDimension-1-i] = temp; } else {
+	 ///////////////////////
+	 temp = bottomArr[i];
+	 bottomArr[i] = frontArr[i];
+	 frontArr[i] = topArr[i];
+	 topArr[i] = backArr[matrixDimension*matrixDimension-1-i];
+	 backArr[matrixDimension*matrixDimension-1-i] = temp; 
+	 ///////////////////////
+	 }	 
                                                                      }
                              }						 
 }
@@ -119,16 +155,24 @@ function matrixXaxisRotationFunction(cellLocation, numStepRot, matrixDimension, 
  //rotate matrix around Z-axis for cell in middle not edge give color
  // k repsent step rotation in middle in clock wise dircetion
  // axisVar = Z, numStepRot = 1,2,3, cellLocation = middle;
-function matrixZaxisRotationFunction(cellLocation, numStepRot, matrixDimension, backArr, rightsideArr, frontArr, leftsideArr) {
+function matrixZaxisRotationFunction(directionRot, cellLocation, numStepRot, matrixDimension, backArr, rightsideArr, frontArr, leftsideArr) {
  // define variables
  var i, k, temp; 
  for(k=0; k < numStepRot; k++){	 
-   for (i = (cellLocation-1)*matrixDimension; i<(matrixDimension+matrixDimension*(cellLocation-1)); i++) {	
+   for (i = (cellLocation-1)*matrixDimension; i<(matrixDimension+matrixDimension*(cellLocation-1)); i++) {
+    if (directionRot == "cw") {		
 	 temp=backArr[i];
 	 backArr[i] = rightsideArr[i];
 	 rightsideArr[i] = frontArr[i];
 	 frontArr[i] = leftsideArr[i];
-	 leftsideArr[i] = temp;	 
+	 leftsideArr[i] = temp;	 } else {
+	 /////////////////
+	 temp = leftsideArr[i];
+	 leftsideArr[i]= frontArr[i];
+	 frontArr[i] = rightsideArr[i];
+	 rightsideArr[i] = backArr[i];
+	 backArr[i] = temp; }
+	 /////////////////
                                                                                                           }
                              }
 			   }
@@ -185,6 +229,12 @@ function clockWiseMatrixaxisRotationFunction(numStepRot, matrixDimension, tempAr
 		for (i = 0; i < matrixDimension*matrixDimension; i++) leftsideArr[i] = tempArr[i];
 	else if (chooseMatrix == 4)
 		for (i = 0; i < matrixDimension*matrixDimension; i++) topArr[i] = tempArr[i];
+	else if (chooseMatrix == 5)
+		for (i = 0; i < matrixDimension*matrixDimension; i++) bottomArr[i] = tempArr[i];
+	else if (chooseMatrix == 1)
+		for (i = 0; i < matrixDimension*matrixDimension; i++) rightsideArr[i] = tempArr[i];
+	else if (chooseMatrix == 0)
+		for (i = 0; i < matrixDimension*matrixDimension; i++) backArr[i] = tempArr[i];	
 	else
 		window.alert("No or wrong number have been choosen for chooseMatrix");
 }
@@ -236,6 +286,12 @@ function antiClockWiseMatrixaxisRotationFunction(numStepRot, matrixDimension, te
 		for (i = 0; i < matrixDimension*matrixDimension; i++) rightsideArr[i] = tempArr[i];
 	else if (chooseMatrix == 5)
 		for (i = 0; i < matrixDimension*matrixDimension; i++) bottomArr[i] = tempArr[i];
+	else if (chooseMatrix == 4)
+		for (i = 0; i < matrixDimension*matrixDimension; i++) topArr[i] = tempArr[i];
+	else if (chooseMatrix == 3)
+		for (i = 0; i < matrixDimension*matrixDimension; i++) leftsideArr[i] = tempArr[i];
+	else if (chooseMatrix == 2)
+		for (i = 0; i < matrixDimension*matrixDimension; i++) frontArr[i] = tempArr[i];
 	else
 		window.alert("No or wrong number have been choosen for chooseMatrix");
 }

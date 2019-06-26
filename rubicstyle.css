@@ -16,11 +16,12 @@
     /*table, td {border: 1px solid #ffffff;}*/
 	table, td {border-style: none;}
     td {padding: 20px;}	
+	/***********************************************/
 	/*button*/
 	button {
   display: inline-block;
   padding: 10px 20px;
-  font-size: 20px;
+  font-size: 15px;
   cursor: pointer;
   text-align: center;
   text-decoration: none;
@@ -40,6 +41,7 @@
   background-color: #555555;
   box-shadow: 0 5px #666;
   transform: translateY(4px);}
+  /**************************************************/
    /*input*/
   select {
   width: 100%;
@@ -51,7 +53,7 @@
   box-sizing: border-box;}
 
   input {
-  width: 10%;
+  width: 50%;
   /*background-color: #4CAF50;*/
   background-color: #EEEEEE;
   color: black;
@@ -72,7 +74,6 @@ p  {
   font-size: 150%;
 }
 
- 
 	
 
 	
